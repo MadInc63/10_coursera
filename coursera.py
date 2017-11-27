@@ -40,3 +40,4 @@ if __name__ == '__main__':
     xml_page = getXML(xml_url)
     random_courses_list = get_courses_list(xml_page, number_of_urls)
     print(get_course_info(random_courses_list))
+1
