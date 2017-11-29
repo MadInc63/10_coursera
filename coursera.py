@@ -35,12 +35,20 @@ def get_course_info(random_courses_list):
         html_page = course_page.text
         soup = BeautifulSoup(html_page, 'html.parser')
         course_info['url'] = course_url
-        course_info['title'] = soup.find('h1', attrs={'class':'title display-3-text'}).get_text()
-        course_info['language'] = soup.find('div', attrs={'class':'rc-Language'}).get_text()
-        course_info['date'] = soup.find('div', attrs={'class':'startdate rc-StartDateString caption-text'}).get_text()
-        course_info['weeks'] = len(soup.find_all('div', attrs={'class':'week-heading body-2-text'}))
+        course_info['title'] = soup.find(
+            'h1', attrs={'class': 'title display-3-text'}).get_text()
+        course_info['language'] = soup.find(
+            'div', attrs={'class': 'rc-Language'}).get_text()
+        course_info['date'] = soup.find(
+            'div',
+            attrs={'class': 'startdate rc-StartDateString caption-text'}
+        ).get_text()
+        course_info['weeks'] = len(
+            soup.find_all('div', attrs={'class': 'week-heading body-2-text'}))
         try:
-            course_info['rating'] = soup.find('div', attrs={'class':'ratings-text bt3-visible-xs'}).get_text()
+            course_info['rating'] = soup.find(
+                'div',
+                attrs={'class': 'ratings-text bt3-visible-xs'}).get_text()
         except AttributeError:
             course_info['rating'] = 'no rating'
         courses_info_list.append(course_info)
