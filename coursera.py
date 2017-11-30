@@ -16,19 +16,19 @@ def arg_parser():
     return parser.parse_args()
 
 
-def get_courses_list(xml_url, number_of_urls):
-    xml_page = requests.get(xml_url)
+def get_courses_list(course_xml_url, number_of_course_urls):
+    xml_page = requests.get(course_xml_url)
     all_courses_on_coursera = []
     root = etree.fromstring(xml_page.content)
     for element in root.iter():
         if 'loc' in element.tag:
             all_courses_on_coursera.append(element.text)
-    return random.sample(all_courses_on_coursera, number_of_urls)
+    return random.sample(all_courses_on_coursera, number_of_course_urls)
 
 
-def get_course_info(random_courses_list):
-    courses_info_list = []
-    for course_url in random_courses_list:
+def get_course_info(random_courses):
+    courses_information_list = []
+    for course_url in random_courses:
         course_info = {}
         course_page = requests.get(course_url)
         course_page.encoding = 'utf-8'
@@ -51,11 +51,11 @@ def get_course_info(random_courses_list):
                 attrs={'class': 'ratings-text bt3-visible-xs'}).get_text()
         except AttributeError:
             course_info['rating'] = 'no rating'
-        courses_info_list.append(course_info)
-    return courses_info_list
+        courses_information_list.append(course_info)
+    return courses_information_list
 
 
-def output_courses_info_to_xlsx(filepath, course_info_list):
+def output_courses_info_to_xlsx(save_filepath, course_info_list):
     wb = Workbook()
     ws = wb.active
     ws.title = 'Coursera'
@@ -65,8 +65,8 @@ def output_courses_info_to_xlsx(filepath, course_info_list):
     for course in course_info_list:
         ws.append([course['url'], course['title'], course['language'],
                    course['date'], course['weeks'], course['rating']])
-    wb.save(filepath)
-    print('Courses information saved to {}'.format(filepath))
+    wb.save(save_filepath)
+    print('Courses information saved to {}'.format(save_filepath))
 
 
 if __name__ == '__main__':
