@@ -34,7 +34,7 @@ def get_random_curses(courses_list, number_of_course_urls):
     return random.sample(courses_list, number_of_course_urls)
 
 
-def fetch_course_request(course_url):
+def fetch_course_page(course_url):
     course_page = requests.get(course_url)
     course_page.encoding = 'utf-8'
     return course_page.text
@@ -104,7 +104,7 @@ if __name__ == '__main__':
         args_parse.number_of_course
     )
     for url in random_courses_list:
-        courses_info_page = fetch_course_request(url)
+        courses_info_page = fetch_course_page(url)
         course_info = get_course_info(courses_info_page)
         course_info['url'] = url
         courses_info_list.append(course_info)
