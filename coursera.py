@@ -20,7 +20,7 @@ def arg_parser():
     return parser.parse_args()
 
 
-def get_courses_list(course_xml_url):
+def fetch_courses_list(course_xml_url):
     xml_page = requests.get(course_xml_url)
     all_courses_on_coursera = []
     root = etree.fromstring(xml_page.content)
@@ -34,39 +34,39 @@ def get_random_curses(courses_list, number_of_course_urls):
     return random.sample(courses_list, number_of_course_urls)
 
 
-def get_course_page(course_url):
+def fetch_course_request(course_url):
     course_page = requests.get(course_url)
     course_page.encoding = 'utf-8'
     return course_page.text
 
 
 def get_course_info(course_page):
-    courses_information = {}
+    course_information = {}
     soup = BeautifulSoup(course_page, 'html.parser')
-    courses_information['title'] = soup.find(
+    course_information['title'] = soup.find(
         'h1',
         attrs={'class': 'title display-3-text'}
     ).get_text()
-    courses_information['language'] = soup.find(
+    course_information['language'] = soup.find(
         'div',
         attrs={'class': 'rc-Language'}
     ).get_text()
-    courses_information['date'] = soup.find(
+    course_information['date'] = soup.find(
         'div',
         attrs={'class': 'startdate rc-StartDateString caption-text'}
     ).get_text()
-    courses_information['weeks'] = len(soup.find_all(
+    course_information['weeks'] = len(soup.find_all(
         'div',
         attrs={'class': 'week-heading body-2-text'}
     ))
     try:
-        courses_information['rating'] = soup.find(
+        course_information['rating'] = soup.find(
             'div',
             attrs={'class': 'ratings-text bt3-visible-xs'}
         ).get_text()
     except AttributeError:
-        courses_information['rating'] = 'no rating'
-    return courses_information
+        course_information['rating'] = 'no rating'
+    return course_information
 
 
 def output_courses_info_to_xlsx(save_filepath, courses_info):
@@ -92,19 +92,21 @@ def output_courses_info_to_xlsx(save_filepath, courses_info):
             course['rating']
         ])
     wb.save(save_filepath)
-    print('Courses information saved to {}'.format(save_filepath))
 
 
 if __name__ == '__main__':
     xml_url = 'https://www.coursera.org/sitemap~www~courses.xml'
     courses_info_list = []
-    arg_parse = arg_parser()
-    courses_list_from_xml = get_courses_list(xml_url)
-    random_courses_list = get_random_curses(courses_list_from_xml,
-                                            arg_parse.number_of_course)
+    args_parse = arg_parser()
+    courses_list_from_xml = fetch_courses_list(xml_url)
+    random_courses_list = get_random_curses(
+        courses_list_from_xml,
+        args_parse.number_of_course
+    )
     for url in random_courses_list:
-        courses_info_page = get_course_page(url)
+        courses_info_page = fetch_course_request(url)
         course_info = get_course_info(courses_info_page)
         course_info['url'] = url
         courses_info_list.append(course_info)
-    output_courses_info_to_xlsx(arg_parse.filepath, courses_info_list)
+    output_courses_info_to_xlsx(args_parse.filepath, courses_info_list)
+    print('Courses information saved to {}'.format(args_parse.filepath))
