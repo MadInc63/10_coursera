@@ -9,13 +9,13 @@ import random
 def arg_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "filepath",
-        help="path to file for load course from www.coursera.org"
+        'filepath',
+        help='path to file for load course from www.coursera.org'
     )
     parser.add_argument(
-        "number_of_course",
+        'number_of_course',
         type=int,
-        help="number of random course from www.coursera.org"
+        help='number of random course from www.coursera.org'
     )
     return parser.parse_args()
 
