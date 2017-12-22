@@ -6,7 +6,7 @@ import requests
 import random
 
 
-def arg_parser():
+def arg_parse():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'filepath',
@@ -97,16 +97,16 @@ def output_courses_info_to_xlsx(save_filepath, courses_info):
 if __name__ == '__main__':
     xml_url = 'https://www.coursera.org/sitemap~www~courses.xml'
     courses_info_list = []
-    args_parse = arg_parser()
+    args = arg_parse()
     courses_list_from_xml = fetch_courses_list(xml_url)
     random_courses_list = get_random_curses(
         courses_list_from_xml,
-        args_parse.number_of_course
+        args.number_of_course
     )
     for url in random_courses_list:
         courses_info_page = fetch_course_page(url)
         course_info = get_course_info(courses_info_page)
         course_info['url'] = url
         courses_info_list.append(course_info)
-    output_courses_info_to_xlsx(args_parse.filepath, courses_info_list)
-    print('Courses information saved to {}'.format(args_parse.filepath))
+    output_courses_info_to_xlsx(args.filepath, courses_info_list)
+    print('Courses information saved to {}'.format(args.filepath))
