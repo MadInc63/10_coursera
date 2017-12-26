@@ -103,10 +103,10 @@ if __name__ == '__main__':
         list_of_courses_urls,
         args.number_of_course
     )
-    for url in list_of_random_courses_urls:
-        course_page = get_response(url)
+    for each_url in list_of_random_courses_urls:
+        course_page = get_response(each_url)
         course_info = get_course_info(course_page)
-        course_info['url'] = url
+        course_info['url'] = each_url
         courses_info_list.append(course_info)
     save_courses_info_to_file(args.filepath, courses_info_list)
     print('Courses information saved to {}'.format(args.filepath))
