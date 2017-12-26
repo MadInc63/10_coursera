@@ -20,29 +20,28 @@ def arg_parse():
     return parser.parse_args()
 
 
-def fetch_courses_list(course_xml_url):
-    xml_page = requests.get(course_xml_url)
-    all_courses_on_coursera = []
-    root = etree.fromstring(xml_page.content)
+def fetch_page(fetch_url):
+    response = requests.get(fetch_url)
+    return response
+
+
+def parse_courses_page(page):
+    parsed_list = []
+    root = etree.fromstring(page.content)
     for element in root.iter():
         if 'loc' in element.tag:
-            all_courses_on_coursera.append(element.text)
-    return all_courses_on_coursera
+            parsed_list.append(element.text)
+    return parsed_list
 
 
-def get_random_curses(courses_list, number_of_course_urls):
-    return random.sample(courses_list, number_of_course_urls)
+def get_random_elements(elements_list, amount_of_elements):
+    return random.sample(elements_list, amount_of_elements)
 
 
-def fetch_course_page(course_url):
-    course_page = requests.get(course_url)
-    course_page.encoding = 'utf-8'
-    return course_page.text
-
-
-def get_course_info(course_page):
+def get_course_info(page):
+    page.encoding = 'utf-8'
     course_information = {}
-    soup = BeautifulSoup(course_page, 'html.parser')
+    soup = BeautifulSoup(page.text, 'html.parser')
     course_information['title'] = soup.find(
         'h1',
         attrs={'class': 'title display-3-text'}
@@ -69,7 +68,7 @@ def get_course_info(course_page):
     return course_information
 
 
-def output_courses_info_to_xlsx(save_filepath, courses_info):
+def save_courses_info_to_file(save_filepath, courses_info):
     wb = Workbook()
     ws = wb.active
     ws.title = 'Coursera'
@@ -98,15 +97,16 @@ if __name__ == '__main__':
     xml_url = 'https://www.coursera.org/sitemap~www~courses.xml'
     courses_info_list = []
     args = arg_parse()
-    courses_list_from_xml = fetch_courses_list(xml_url)
-    random_courses_list = get_random_curses(
-        courses_list_from_xml,
+    get_course_url = fetch_page(xml_url)
+    courses_list = parse_courses_page(get_course_url)
+    random_courses_list = get_random_elements(
+        courses_list,
         args.number_of_course
     )
     for url in random_courses_list:
-        courses_info_page = fetch_course_page(url)
+        courses_info_page = fetch_page(url)
         course_info = get_course_info(courses_info_page)
         course_info['url'] = url
         courses_info_list.append(course_info)
-    output_courses_info_to_xlsx(args.filepath, courses_info_list)
+    save_courses_info_to_file(args.filepath, courses_info_list)
     print('Courses information saved to {}'.format(args.filepath))
