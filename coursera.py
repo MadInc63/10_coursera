@@ -20,8 +20,8 @@ def arg_parse():
     return parser.parse_args()
 
 
-def fetch_response(fetch_url):
-    response = requests.get(fetch_url)
+def get_response(url):
+    response = requests.get(url)
     return response
 
 
@@ -97,14 +97,14 @@ if __name__ == '__main__':
     xml_url = 'https://www.coursera.org/sitemap~www~courses.xml'
     courses_info_list = []
     args = arg_parse()
-    get_response_from_url = fetch_response(xml_url)
+    get_response_from_url = get_response(xml_url)
     list_of_courses_urls = parse_courses_page(get_response_from_url)
     list_of_random_courses_urls = get_random_elements(
         list_of_courses_urls,
         args.number_of_course
     )
     for url in list_of_random_courses_urls:
-        course_page = fetch_response(url)
+        course_page = get_response(url)
         course_info = get_course_info(course_page)
         course_info['url'] = url
         courses_info_list.append(course_info)
