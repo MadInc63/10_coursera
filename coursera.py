@@ -20,8 +20,8 @@ def arg_parse():
     return parser.parse_args()
 
 
-def get_response(url):
-    response = requests.get(url)
+def fetch_page(fetched_url):
+    response = requests.get(fetched_url).text
     return response
 
 
@@ -41,7 +41,7 @@ def get_random_elements(elements_list, amount_of_elements):
 def get_course_info(page):
     page.encoding = 'utf-8'
     course_information = {}
-    soup = BeautifulSoup(page.text, 'html.parser')
+    soup = BeautifulSoup(page, 'html.parser')
     course_information['title'] = soup.find(
         'h1',
         attrs={'class': 'title display-3-text'}
@@ -97,16 +97,16 @@ if __name__ == '__main__':
     xml_url = 'https://www.coursera.org/sitemap~www~courses.xml'
     courses_info_list = []
     args = arg_parse()
-    get_response_from_url = get_response(xml_url)
-    list_of_courses_urls = parse_courses_page(get_response_from_url)
+    page_from_url = fetch_page(xml_url)
+    list_of_courses_urls = parse_courses_page(page_from_url)
     list_of_random_courses_urls = get_random_elements(
         list_of_courses_urls,
         args.number_of_course
     )
-    for each_url in list_of_random_courses_urls:
-        course_page = get_response(each_url)
+    for url in list_of_random_courses_urls:
+        course_page = fetch_page(url)
         course_info = get_course_info(course_page)
-        course_info['url'] = each_url
+        course_info['url'] = url
         courses_info_list.append(course_info)
     save_courses_info_to_file(args.filepath, courses_info_list)
     print('Courses information saved to {}'.format(args.filepath))
