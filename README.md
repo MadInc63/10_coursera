@@ -1,6 +1,6 @@
 # Coursera Dump
 
-The script collects information about the courses from the site www.cursera.org and stores the result in a xlsx format file.
+The script collects information about the courses from the site www.coursera.org and stores the result in a excel format file.
 
 # How to use
 
@@ -19,7 +19,7 @@ optional arguments:
 
 ```
 
-To start downloading course information on the website www.cursera.org, you must specify the path to save the file and the number of imported courses through a space after specifying the name of the script.
+To start downloading course information on the website www.coursera.org, you must specify the path to save the file and the number of imported courses through a space after specifying the name of the script.
 
 ```Bash
 python coursera.py cours.xlsx 15
