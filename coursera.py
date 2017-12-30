@@ -21,13 +21,13 @@ def arg_parse():
 
 
 def fetch_page(fetched_url):
-    response = requests.get(fetched_url).text
+    response = requests.get(fetched_url).content
     return response
 
 
 def parse_courses_page(page):
     parsed_list = []
-    root = etree.fromstring(page.content)
+    root = etree.fromstring(page)
     for element in root.iter():
         if 'loc' in element.tag:
             parsed_list.append(element.text)
@@ -39,7 +39,6 @@ def get_random_elements(elements_list, amount_of_elements):
 
 
 def get_course_info(page):
-    page.encoding = 'utf-8'
     course_information = {}
     soup = BeautifulSoup(page, 'html.parser')
     course_information['title'] = soup.find(
@@ -64,11 +63,11 @@ def get_course_info(page):
             attrs={'class': 'ratings-text bt3-visible-xs'}
         ).get_text()
     except AttributeError:
-        course_information['rating'] = 'no rating'
+        course_information['rating'] = ''
     return course_information
 
 
-def save_courses_info_to_file(save_filepath, courses_info):
+def fill_courses_info_to_file(courses_info):
     wb = Workbook()
     ws = wb.active
     ws.title = 'Coursera'
@@ -90,7 +89,7 @@ def save_courses_info_to_file(save_filepath, courses_info):
             course['weeks'],
             course['rating']
         ])
-    wb.save(save_filepath)
+    return wb
 
 
 if __name__ == '__main__':
@@ -108,5 +107,6 @@ if __name__ == '__main__':
         course_info = get_course_info(course_page)
         course_info['url'] = url
         courses_info_list.append(course_info)
-    save_courses_info_to_file(args.filepath, courses_info_list)
+    file = fill_courses_info_to_file(courses_info_list)
+    file.save(args.filepath)
     print('Courses information saved to {}'.format(args.filepath))
