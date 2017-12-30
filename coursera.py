@@ -107,6 +107,6 @@ if __name__ == '__main__':
         course_info = get_course_info(course_page)
         course_info['url'] = url
         courses_info_list.append(course_info)
-    file = fill_courses_info_to_file(courses_info_list)
-    file.save(args.filepath)
+    excel_file = fill_courses_info_to_file(courses_info_list)
+    excel_file.save(args.filepath)
     print('Courses information saved to {}'.format(args.filepath))
