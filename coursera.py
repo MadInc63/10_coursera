@@ -92,6 +92,10 @@ def fill_courses_info_to_file(courses_info):
     return wb
 
 
+def save_excel_file(workbook, file_path):
+    workbook.save(file_path)
+
+
 if __name__ == '__main__':
     xml_url = 'https://www.coursera.org/sitemap~www~courses.xml'
     courses_info_list = []
@@ -108,5 +112,5 @@ if __name__ == '__main__':
         course_info['url'] = url
         courses_info_list.append(course_info)
     excel_file = fill_courses_info_to_file(courses_info_list)
-    excel_file.save(args.filepath)
+    save_excel_file(excel_file, args.filepath)
     print('Courses information saved to {}'.format(args.filepath))
