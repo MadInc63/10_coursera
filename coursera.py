@@ -67,7 +67,7 @@ def get_course_info(page):
     return course_information
 
 
-def fill_courses_info_to_file(courses_info):
+def fill_courses_info_to_workbook(courses_info):
     wb = Workbook()
     ws = wb.active
     ws.title = 'Coursera'
@@ -92,7 +92,7 @@ def fill_courses_info_to_file(courses_info):
     return wb
 
 
-def save_excel_file(workbook, file_path):
+def save_workbook(workbook, file_path):
     workbook.save(file_path)
 
 
@@ -111,6 +111,6 @@ if __name__ == '__main__':
         course_info = get_course_info(course_page)
         course_info['url'] = url
         courses_info_list.append(course_info)
-    excel_file = fill_courses_info_to_file(courses_info_list)
-    save_excel_file(excel_file, args.filepath)
+    excel_file = fill_courses_info_to_workbook(courses_info_list)
+    save_workbook(excel_file, args.filepath)
     print('Courses information saved to {}'.format(args.filepath))
